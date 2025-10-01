@@ -1,10 +1,8 @@
 from django.shortcuts import render
 # Create your views here.
 def login_view(request):
-    return render(request, 'account/login.html')
+    return render(request, 'accounts/login.html')
 
 def register_view(request):
-    return render(request, 'account/register.html')
+    return render(request, 'accounts/register.html')
 
-def dashboard_view(request):
-    return render(request, 'account/dashboard.html')

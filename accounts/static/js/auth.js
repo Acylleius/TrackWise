@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (registerForm) registerForm.reset();
 
       // Option 2: Redirect (uncomment if you want to send them back to login instead)
-       window.location.href = "{% url 'account:login' %}";
+       window.location.href = "{% url 'accounts:login' %}";
     });
   }
 
