@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Login — TrackWise{% endblock %}
+{% block content %}
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Login — TrackWise</title>
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+
+</head>
+<body>
+  <div class="login-container">
+    
+    <!-- Left space with logo -->
+    <div class="login-space">
+      <div class="login-logo">LOGO</div>
+    </div>
+
+    <!-- Right body -->
+    <div class="login-body">
+      <div class="login-card">
+        <h2>Welcome User!</h2>
+
+        <form id="login-form" method="post" action="{% url 'account:login' %}">
+          {% csrf_token %}
+
+          <label for="login-username">Username</label>
+          <input id="login-username" name="username" type="text" required>
+
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" required>
+
+          <div class="login-actions">
+            <button type="submit" class="btn btn-login-primary">LOGIN</button>
+          </div>
+
+          <p class="login-note">Don’t have an account?</p>
+          <div class="login-actions">
+            <a href="{% url 'account:register' %}" class="btn btn-login-register">REGISTER</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+{% endblock %}
