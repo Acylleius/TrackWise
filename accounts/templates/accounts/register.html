@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Register — TrackWise{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/register.css' %}">
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="register-container">
+  <div class="register-body">
+    <div class="register-card">
+      <h2>Create new account</h2>
+      <p class="register-note">
+        already have an account? <a href="{% url 'account:login' %}">Login</a>
+      </p>
+
+      <form id="register-form" method="post">
+        {% csrf_token %}
+        
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="reg-password1">Password</label>
+        <input type="password" id="reg-password1" name="password1" required>
+
+        <label for="reg-password2">Confirm password</label>
+        <input type="password" id="reg-password2" name="password2" required>
+
+        <div class="register-terms">
+          <input type="checkbox" id="terms" required>
+          <label for="terms">I agree all statements in Terms of service</label>
+        </div>
+
+        <div class="register-actions">
+          <button type="submit" class="btn btn-register-primary">REGISTER</button>
+          <button type="button" class="btn btn-register-cancel" id="cancel-btn">CANCEL</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="register-space">
+    <div class="register-logo">LOGO</div>
+  </div>
+</div>
+
+{% endblock %}

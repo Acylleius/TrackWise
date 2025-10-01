@@ -1,0 +1,117 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f6f7fb;
+  margin: 0;
+  padding: 0;
+  color: #222;
+}
+
+/* Layout container */
+.login-container {
+  display: flex;
+  height: 100vh;
+  background: #1e3a5f;  /* same dark blue as register */
+  border-radius: 12px;
+}
+
+/* Left space with logo */
+.login-space {
+  flex: 1;
+  background: #e5e7eb;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 40px;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.login-logo {
+  background: #fff;
+  color: #333;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  font-weight: bold;
+}
+
+/* Right body */
+.login-body {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Login card */
+.login-card {
+  background: #e7e7e7;
+  padding: 32px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  color: #3a3a3a;
+}
+
+.login-card h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  padding-bottom: 6px;
+}
+
+/* Inputs */
+.login-card label {
+  display: block;
+  margin: 10px 0 4px;
+  font-size: 0.95rem;
+}
+
+.login-card input[type="text"],
+.login-card input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+/* Actions */
+.login-actions {
+  display: flex;
+  flex-direction: column; /* vertical stack */
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.95rem;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-login-primary {
+  background: #22c55e; /* green */
+  color: white;
+}
+
+.btn-login-register {
+  background: #2563eb; /* blue for register on login page */
+  color: white;
+}
+
+/* Note text */
+.login-note {
+  font-size: 0.9rem;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  text-align: center;
+}
