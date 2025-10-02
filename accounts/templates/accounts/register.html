@@ -7,7 +7,19 @@
   <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 {% endblock %}
 
+
 {% block content %}
+{% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+
 
 <div class="register-container">
   <div class="register-body">
@@ -18,27 +30,28 @@
       </p>
 
       <form id="register-form" method="post">
-        {% csrf_token %}
-        
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" required>
+  {% csrf_token %}
 
-        <label for="reg-password1">Password</label>
-        <input type="password" id="reg-password1" name="password1" required>
+  <label for="username">Username</label>
+  <input type="text" id="username" name="username" required>
 
-        <label for="reg-password2">Confirm password</label>
-        <input type="password" id="reg-password2" name="password2" required>
+  <label for="password1">Password</label>
+  <input type="password" id="password1" name="password1" required>
 
-        <div class="register-terms">
-          <input type="checkbox" id="terms" required>
-          <label for="terms">I agree all statements in Terms of service</label>
-        </div>
+  <label for="password2">Confirm password</label>
+  <input type="password" id="password2" name="password2" required>
 
-        <div class="register-actions">
-          <button type="submit" class="btn btn-register-primary">REGISTER</button>
-          <button type="button" class="btn btn-register-cancel" id="cancel-btn">CANCEL</button>
-        </div>
-      </form>
+  <div class="register-terms">
+    <input type="checkbox" id="terms" required>
+    <label for="terms">I agree all statements in Terms of service</label>
+  </div>
+
+  <div class="register-actions">
+    <button type="submit" class="btn btn-register-primary">REGISTER</button>
+    <button type="button" class="btn btn-register-cancel" id="cancel-btn">CANCEL</button>
+  </div>
+</form>
+
     </div>
   </div>
 
@@ -48,3 +61,5 @@
 </div>
 
 {% endblock %}
+
+C:\Users\User\Documents\lee trackwise\TrackWise\accounts\templates\accounts\register.html
