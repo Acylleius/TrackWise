@@ -28,4 +28,3 @@ class CustomUserCreationForm(UserCreationForm):
 
 class CustomAuthenticationForm(AuthenticationForm):
     pass
-    C:\Users\User\Documents\lee trackwise\TrackWise\accounts\forms.py

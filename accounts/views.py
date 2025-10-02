@@ -48,16 +48,10 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)   # Log the user in
-                return redirect('accounts:dashboard')  # Redirect to dashboard
+                return redirect('dashboard:dashboard')  # Redirect to dashboard
     else:
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
 
-# --- Dashboard View ---
-@login_required
-def dashboard_view(request):
-    return render(request, 'accounts/dashboard.html')
 
 
-
-C:\Users\User\Documents\lee trackwise\TrackWise\accounts\views.py

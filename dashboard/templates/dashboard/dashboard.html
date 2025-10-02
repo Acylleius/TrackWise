@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — TrackWise{% endblock %}
+{% block content %}
+{% load static %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dashboard — TrackWise</title>
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+</head>
+<body>
+  <div class="dashboard-wrapper">
+
+    <!-- Top Navigation -->
+    <header class="dashboard-header">
+      <div class="header-logo">TrackWise</div>
+      <nav class="header-nav">
+        <a href="#">Profile</a>
+        <a href="#">Settings</a>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="dashboard-hero">
+      <div class="hero-text">
+        <h1>YOUR PERSONAL <br> INVENTORY MANAGER</h1>
+        <button class="btn-add">ADD NEW INVENTORY</button>
+      </div>
+      <div class="hero-illustration"></div> <!-- placeholder for image/chart -->
+    </section>
+
+    <!-- Inventory Cards -->
+    <main class="dashboard-main">
+      <div class="inventory-grid">
+        <div class="inventory-card">
+          <h3>CREATED INVENTORY</h3>
+          <p>Item details go here...</p>
+        </div>
+        <div class="inventory-card">
+          <h3>CREATED INVENTORY</h3>
+          <p>Item details go here...</p>
+        </div>
+        <div class="inventory-card">
+          <h3>CREATED INVENTORY</h3>
+          <p>Item details go here...</p>
+        </div>
+        <div class="inventory-card">
+          <h3>CREATED INVENTORY</h3>
+          <p>Item details go here...</p>
+        </div>
+      </div>
+    </main>
+
+  </div>
+</body>
+</html>
+{% endblock %}
