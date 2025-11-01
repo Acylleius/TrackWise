@@ -1,229 +1,527 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Owner Registration - TrackWise</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/accounts/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/accounts/registration.css' %}">
+{% endblock %}
+
+{% block title %}Business Owner Registration - TrackWise{% endblock %}
+
+{% block content %}
+<div class="auth-body">
     <div class="auth-container">
-        <div class="auth-header">
-            <h1>TrackWise</h1>
-            <p>Business Owner Registration</p>
+        <div class="logo-container">
+            <div class="logo-text">
+                <i class="fas fa-chart-line"></i>
+                TrackWise
+            </div>
         </div>
         
-        <div class="auth-body">
-            <h2 style="text-align: center; margin-bottom: 1.5rem; color: var(--dark-color);">Create Business Account</h2>
-            
+        <div class="form-section">
+            <div class="auth-header">
+                <h2>Create Account</h2>
+                <p>Already have an account? <a href="{% url 'accounts:login' %}">Login</a></p>
+            </div>
+
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-{{ message.tags }}{% endif %}">
+                    <div class="alert alert-{{ message.tags }}">
                         {{ message }}
                     </div>
                 {% endfor %}
             {% endif %}
+
+            <div class="progress-indicator">
+                <div class="progress-step active" id="step1-indicator">1</div>
+                <div class="progress-line" id="line1"></div>
+                <div class="progress-step" id="step2-indicator">2</div>
+            </div>
             
-            <form method="post" novalidate>
+            <form method="post" id="registration-form" novalidate>
                 {% csrf_token %}
                 
-                {% if form.non_field_errors %}
-                    <div class="alert alert-error">
-                        {% for error in form.non_field_errors %}
-                            {{ error }}
+                <div id="personal-info-step">
+                    <h3 class="section-heading">
+                        <i class="fas fa-user"></i>
+                        Personal Information
+                    </h3>
+
+                    <!-- Django Form Errors for Step 1 Fields -->
+                    {% if form.errors %}
+                    <div class="form-errors" style="display: none;">
+                        {% for field in form %}
+                            {% if field.errors and field.name in 'first_name,last_name,email,username,password1,password2' %}
+                                {% for error in field.errors %}
+                                    <div data-field="{{ field.name }}">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
                         {% endfor %}
                     </div>
-                {% endif %}
-                
-                <!-- Personal Information -->
-                <div style="margin-bottom: 2rem;">
-                    <h3 style="color: var(--dark-color); margin-bottom: 1rem;">Personal Information</h3>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Username</label>
-                        {{ form.username }}
-                        {% if form.username.errors %}
-                            <div class="errorlist">
-                                {% for error in form.username.errors %}
-                                    <div>{{ error }}</div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Email Address</label>
-                        {{ form.email }}
-                        {% if form.email.errors %}
-                            <div class="errorlist">
-                                {% for error in form.email.errors %}
-                                    <div>{{ error }}</div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">First Name</label>
-                        {{ form.first_name }}
-                        {% if form.first_name.errors %}
-                            <div class="errorlist">
+                    {% endif %}
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.first_name.id_for_label }}">First Name *</label>
+                            {{ form.first_name }}
+                            <span class="error-message" id="{{ form.first_name.id_for_label }}_error"></span>
+                            {% if form.first_name.errors %}
                                 {% for error in form.first_name.errors %}
-                                    <div>{{ error }}</div>
+                                    <span class="error-message show" id="server_{{ form.first_name.id_for_label }}_error">{{ error }}</span>
                                 {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Last Name</label>
-                        {{ form.last_name }}
-                        {% if form.last_name.errors %}
-                            <div class="errorlist">
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.last_name.id_for_label }}">Last Name *</label>
+                            {{ form.last_name }}
+                            <span class="error-message" id="{{ form.last_name.id_for_label }}_error"></span>
+                            {% if form.last_name.errors %}
                                 {% for error in form.last_name.errors %}
-                                    <div>{{ error }}</div>
+                                    <span class="error-message show" id="server_{{ form.last_name.id_for_label }}_error">{{ error }}</span>
                                 {% endfor %}
-                            </div>
-                        {% endif %}
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-                
-                <!-- Company Information -->
-                <div style="margin-bottom: 2rem;">
-                    <h3 style="color: var(--dark-color); margin-bottom: 1rem;">Company Information</h3>
-                    
+
                     <div class="form-group">
-                        <label class="form-label">Company Option</label>
-                        <div style="display: flex; gap: 2rem;">
-                            {% for choice in form.company_choice %}
-                                <label style="display: flex; align-items: center; gap: 0.5rem;">
-                                    {{ choice.tag }}
-                                    <span>{{ choice.choice_label }}</span>
-                                </label>
+                        <label class="form-label" for="{{ form.email.id_for_label }}">Email Address *</label>
+                        {{ form.email }}
+                        <span class="error-message" id="{{ form.email.id_for_label }}_error"></span>
+                        {% if form.email.errors %}
+                            {% for error in form.email.errors %}
+                                <span class="error-message show" id="server_{{ form.email.id_for_label }}_error">{{ error }}</span>
                             {% endfor %}
-                        </div>
+                        {% endif %}
                     </div>
-                    
-                    <!-- New Company Fields -->
-                    <div id="new-company-fields" style="display: none;">
-                        <div class="form-group">
-                            <label class="form-label">Company Name</label>
-                            {{ form.new_company_name }}
-                            {% if form.new_company_name.errors %}
-                                <div class="errorlist">
-                                    {% for error in form.new_company_name.errors %}
-                                        <div>{{ error }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Company Address</label>
-                            {{ form.company_address }}
-                            {% if form.company_address.errors %}
-                                <div class="errorlist">
-                                    {% for error in form.company_address.errors %}
-                                        <div>{{ error }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Contact Information</label>
-                            {{ form.company_contact }}
-                            {% if form.company_contact.errors %}
-                                <div class="errorlist">
-                                    {% for error in form.company_contact.errors %}
-                                        <div>{{ error }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="{{ form.username.id_for_label }}">Username *</label>
+                        {{ form.username }}
+                        <span class="error-message" id="{{ form.username.id_for_label }}_error"></span>
+                        {% if form.username.errors %}
+                            {% for error in form.username.errors %}
+                                <span class="error-message show" id="server_{{ form.username.id_for_label }}_error">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
                     </div>
-                    
-                    <!-- Existing Company Field -->
-                    <div id="existing-company-field" style="display: none;">
-                        <div class="form-group">
-                            <label class="form-label">Select Company</label>
-                            {{ form.existing_company }}
-                            {% if form.existing_company.errors %}
-                                <div class="errorlist">
-                                    {% for error in form.existing_company.errors %}
-                                        <div>{{ error }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Password -->
-                <div style="margin-bottom: 2rem;">
-                    <h3 style="color: var(--dark-color); margin-bottom: 1rem;">Security</h3>
                     
                     <div class="form-group">
-                        <label class="form-label">Password</label>
+                        <label class="form-label" for="{{ form.password1.id_for_label }}">Password *</label>
                         {{ form.password1 }}
+                        <span class="error-message" id="{{ form.password1.id_for_label }}_error"></span>
                         {% if form.password1.errors %}
-                            <div class="errorlist">
-                                {% for error in form.password1.errors %}
-                                    <div>{{ error }}</div>
-                                {% endfor %}
-                            </div>
+                            {% for error in form.password1.errors %}
+                                <span class="error-message show" id="server_{{ form.password1.id_for_label }}_error">{{ error }}</span>
+                            {% endfor %}
                         {% endif %}
                     </div>
-                    
+
                     <div class="form-group">
-                        <label class="form-label">Confirm Password</label>
+                        <label class="form-label" for="{{ form.password2.id_for_label }}">Confirm Password *</label>
                         {{ form.password2 }}
+                        <span class="error-message" id="{{ form.password2.id_for_label }}_error"></span>
                         {% if form.password2.errors %}
-                            <div class="errorlist">
-                                {% for error in form.password2.errors %}
-                                    <div>{{ error }}</div>
-                                {% endfor %}
-                            </div>
+                            {% for error in form.password2.errors %}
+                                <span class="error-message show" id="server_{{ form.password2.id_for_label }}_error">{{ error }}</span>
+                            {% endfor %}
                         {% endif %}
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-primary" id="continue-btn">
+                            <span>Continue</span>
+                        </button>
                     </div>
                 </div>
                 
-                <button type="submit" class="btn btn-primary">Create Business Account</button>
+                <div id="company-info-step" style="display: none;">
+                    <h3 class="section-heading">
+                        <i class="fas fa-building"></i>
+                        Company Information
+                    </h3>
+                    
+                    <!-- Django Form Errors for Step 2 Fields -->
+                    {% if form.errors %}
+                    <div class="form-errors" style="display: none;">
+                        {% for field in form %}
+                            {% if field.errors and field.name in 'new_company_name,existing_company,company_choice' %}
+                                {% for error in field.errors %}
+                                    <div data-field="{{ field.name }}">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="form-group">
+                        <label class="form-label">Company Option *</label>
+                        <div class="radio-group">
+                            {{ form.company_choice }}
+                        </div>
+                    </div>
+                    
+                    <div id="existing-company-fields" class="company-field" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.existing_company.id_for_label }}">Select Company</label>
+                            {{ form.existing_company }}
+                            <span class="error-message" id="{{ form.existing_company.id_for_label }}_error"></span>
+                            {% if form.existing_company.errors %}
+                                {% for error in form.existing_company.errors %}
+                                    <span class="error-message show" id="server_{{ form.existing_company.id_for_label }}_error">{{ error }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div id="new-company-fields" class="company-field">
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.new_company_name.id_for_label }}">Company Name *</label>
+                            {{ form.new_company_name }}
+                            <span class="error-message" id="{{ form.new_company_name.id_for_label }}_error"></span>
+                            {% if form.new_company_name.errors %}
+                                {% for error in form.new_company_name.errors %}
+                                    <span class="error-message show" id="server_{{ form.new_company_name.id_for_label }}_error">{{ error }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.company_address.id_for_label }}">Company Address</label>
+                            {{ form.company_address }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.company_contact.id_for_label }}">Contact Information</label>
+                            {{ form.company_contact }}
+                        </div>
+                    </div>
+                    
+                    <div class="terms-group">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">I agree to all statements in Terms of Service</label>
+                    </div>
+                    <span class="error-message" id="terms_error">You must agree to the terms</span>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-danger" id="back-btn">
+                            <span>Back</span>
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <span>Register</span>
+                        </button>
+                    </div>
+                </div>
             </form>
             
-            <div class="auth-link">
-                <p>Already have an account? <a href="{% url 'login' %}">Sign in here</a></p>
+            <div class="auth-footer">
+                <p class="footer-content">
+                    <a href="{% url 'accounts:landing' %}" class="footer-home-link">
+                        <i class="fas fa-home"></i> Back to Home
+                    </a>
+                    <a>|</a>
+                    <span class="footer-spacer"></span>
+                    <a href="#" class="footer-support-link">Contact Support</a>
+                </p>
             </div>
         </div>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const companyChoiceRadios = document.querySelectorAll('input[name="company_choice"]');
-            const newCompanyFields = document.getElementById('new-company-fields');
-            const existingCompanyField = document.getElementById('existing-company-field');
-            
-            function toggleCompanyFields() {
-                const selectedValue = document.querySelector('input[name="company_choice"]:checked').value;
-                
-                if (selectedValue === 'new') {
-                    newCompanyFields.style.display = 'block';
-                    existingCompanyField.style.display = 'none';
-                } else {
-                    newCompanyFields.style.display = 'none';
-                    existingCompanyField.style.display = 'block';
-                }
+        <div class="particles-section" id="particles-js"></div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+<script>
+    // Particles configuration
+    particlesJS('particles-js', {
+        particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: '#7aa7e0' },
+            shape: { type: 'circle' },
+            opacity: { value: 0.8, random: true },
+            size: { value: 20, random: true }, // Increased from 8 to 12
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#7aa7e0',
+                opacity: 0.6,
+                width: 2
+            },
+            move: {
+                enable: true,
+                speed: 1.5,
+                direction: 'none',
+                random: true,
+                out_mode: 'out'
             }
-            
-            // Initial toggle
-            toggleCompanyFields();
-            
-            // Add event listeners
-            companyChoiceRadios.forEach(radio => {
-                radio.addEventListener('change', toggleCompanyFields);
-            });
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: { enable: true, mode: 'grab' },
+                resize: true
+            },
+            modes: {
+                grab: { distance: 180, line_linked: { opacity: 1 } }
+            }
+        },
+        retina_detect: true
+    });
+
+    // Form validation and step management
+    const form = document.getElementById('registration-form');
+    const step1 = document.getElementById('personal-info-step');
+    const step2 = document.getElementById('company-info-step');
+    const continueBtn = document.getElementById('continue-btn');
+    const backBtn = document.getElementById('back-btn');
+    const step1Indicator = document.getElementById('step1-indicator');
+    const step2Indicator = document.getElementById('step2-indicator');
+    const line1 = document.getElementById('line1');
+
+    // Check if there are server-side errors and show appropriate step
+    document.addEventListener('DOMContentLoaded', function() {
+        const serverErrors = document.querySelectorAll('.error-message.show');
+        const hasStep1Errors = Array.from(serverErrors).some(error => {
+            return error.id.includes('first_name') || 
+                   error.id.includes('last_name') || 
+                   error.id.includes('email') || 
+                   error.id.includes('username') || 
+                   error.id.includes('password1') || 
+                   error.id.includes('password2');
         });
-    </script>
-</body>
-</html>
+        
+        const hasStep2Errors = Array.from(serverErrors).some(error => {
+            return error.id.includes('company_name') || 
+                   error.id.includes('existing_company') || 
+                   error.id.includes('company_choice');
+        });
+
+        if (hasStep2Errors || (hasStep1Errors && step2.style.display !== 'none')) {
+            // Show step 2 if there are step 2 errors or if we're already on step 2 with errors
+            step1.style.display = 'none';
+            step2.style.display = 'block';
+            step1Indicator.classList.add('completed');
+            step1Indicator.innerHTML = '<i class="fas fa-check"></i>';
+            step2Indicator.classList.add('active');
+            line1.classList.add('completed');
+        }
+        
+        // Initialize company fields based on current selection
+        toggleCompanyFields();
+    });
+
+    // Validation functions
+    function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function showError(inputId, errorId, message) {
+        const input = document.getElementById(inputId);
+        const error = document.getElementById(errorId);
+        if (input) {
+            input.classList.add('error');
+            // Also add to Django's error list if it exists
+            const serverError = document.getElementById('server_' + errorId);
+            if (serverError) {
+                serverError.style.display = 'none';
+            }
+        }
+        if (error) {
+            error.textContent = message;
+            error.classList.add('show');
+        }
+    }
+
+    function clearError(inputId, errorId) {
+        const input = document.getElementById(inputId);
+        const error = document.getElementById(errorId);
+        if (input) input.classList.remove('error');
+        if (error) error.classList.remove('show');
+        
+        // Also handle server errors
+        const serverError = document.getElementById('server_' + errorId);
+        if (serverError) {
+            serverError.classList.remove('show');
+        }
+    }
+
+    function validateStep1() {
+        let isValid = true;
+
+        // Clear all step 1 errors first
+        clearError('{{ form.first_name.id_for_label }}', '{{ form.first_name.id_for_label }}_error');
+        clearError('{{ form.last_name.id_for_label }}', '{{ form.last_name.id_for_label }}_error');
+        clearError('{{ form.email.id_for_label }}', '{{ form.email.id_for_label }}_error');
+        clearError('{{ form.username.id_for_label }}', '{{ form.username.id_for_label }}_error');
+        clearError('{{ form.password1.id_for_label }}', '{{ form.password1.id_for_label }}_error');
+        clearError('{{ form.password2.id_for_label }}', '{{ form.password2.id_for_label }}_error');
+
+        // First name
+        const firstName = document.getElementById('{{ form.first_name.id_for_label }}').value.trim();
+        if (!firstName) {
+            showError('{{ form.first_name.id_for_label }}', '{{ form.first_name.id_for_label }}_error', 'First name is required');
+            isValid = false;
+        }
+
+        // Last name
+        const lastName = document.getElementById('{{ form.last_name.id_for_label }}').value.trim();
+        if (!lastName) {
+            showError('{{ form.last_name.id_for_label }}', '{{ form.last_name.id_for_label }}_error', 'Last name is required');
+            isValid = false;
+        }
+
+        // Email
+        const email = document.getElementById('{{ form.email.id_for_label }}').value.trim();
+        if (!email) {
+            showError('{{ form.email.id_for_label }}', '{{ form.email.id_for_label }}_error', 'Email is required');
+            isValid = false;
+        } else if (!validateEmail(email)) {
+            showError('{{ form.email.id_for_label }}', '{{ form.email.id_for_label }}_error', 'Valid email is required');
+            isValid = false;
+        }
+
+        // Username
+        const username = document.getElementById('{{ form.username.id_for_label }}').value.trim();
+        if (!username) {
+            showError('{{ form.username.id_for_label }}', '{{ form.username.id_for_label }}_error', 'Username is required');
+            isValid = false;
+        } else if (username.length < 3) {
+            showError('{{ form.username.id_for_label }}', '{{ form.username.id_for_label }}_error', 'Username must be at least 3 characters');
+            isValid = false;
+        }
+
+        // Password
+        const password = document.getElementById('{{ form.password1.id_for_label }}').value;
+        if (!password) {
+            showError('{{ form.password1.id_for_label }}', '{{ form.password1.id_for_label }}_error', 'Password is required');
+            isValid = false;
+        } else if (password.length < 8) {
+            showError('{{ form.password1.id_for_label }}', '{{ form.password1.id_for_label }}_error', 'Password must be at least 8 characters');
+            isValid = false;
+        }
+
+        // Confirm password
+        const confirmPassword = document.getElementById('{{ form.password2.id_for_label }}').value;
+        if (!confirmPassword) {
+            showError('{{ form.password2.id_for_label }}', '{{ form.password2.id_for_label }}_error', 'Please confirm your password');
+            isValid = false;
+        } else if (confirmPassword !== password) {
+            showError('{{ form.password2.id_for_label }}', '{{ form.password2.id_for_label }}_error', 'Passwords must match');
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    function validateStep2() {
+        let isValid = true;
+        
+        // Clear step 2 errors
+        clearError('{{ form.new_company_name.id_for_label }}', '{{ form.new_company_name.id_for_label }}_error');
+        clearError('{{ form.existing_company.id_for_label }}', '{{ form.existing_company.id_for_label }}_error');
+        document.getElementById('terms_error').classList.remove('show');
+
+        const companyChoice = document.querySelector('input[name="company_choice"]:checked').value;
+
+        if (companyChoice === 'new') {
+            const companyName = document.getElementById('{{ form.new_company_name.id_for_label }}').value.trim();
+            if (!companyName) {
+                showError('{{ form.new_company_name.id_for_label }}', '{{ form.new_company_name.id_for_label }}_error', 'Company name is required');
+                isValid = false;
+            }
+        } else {
+            const existingCompany = document.getElementById('{{ form.existing_company.id_for_label }}').value;
+            if (!existingCompany) {
+                showError('{{ form.existing_company.id_for_label }}', '{{ form.existing_company.id_for_label }}_error', 'Please select an existing company');
+                isValid = false;
+            }
+        }
+
+        const terms = document.getElementById('terms').checked;
+        if (!terms) {
+            document.getElementById('terms_error').classList.add('show');
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    // Continue button - validate step 1 before proceeding
+    continueBtn.addEventListener('click', () => {
+        if (validateStep1()) {
+            step1.style.display = 'none';
+            step2.style.display = 'block';
+            step1Indicator.classList.add('completed');
+            step1Indicator.innerHTML = '<i class="fas fa-check"></i>';
+            step2Indicator.classList.add('active');
+            line1.classList.add('completed');
+            document.querySelector('.form-section').scrollTop = 0;
+        } else {
+            // Scroll to first error
+            const firstError = document.querySelector('.error-message.show');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+
+    // Back button
+    backBtn.addEventListener('click', () => {
+        step2.style.display = 'none';
+        step1.style.display = 'block';
+        step1Indicator.classList.remove('completed');
+        step1Indicator.textContent = '1';
+        step2Indicator.classList.remove('active');
+        line1.classList.remove('completed');
+        document.querySelector('.form-section').scrollTop = 0;
+    });
+
+    // Form submission - validate step 2
+    form.addEventListener('submit', (e) => {
+        if (!validateStep2()) {
+            e.preventDefault();
+            // Scroll to first error
+            const firstError = document.querySelector('.error-message.show');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+
+    // Company option toggle
+    const companyRadios = document.querySelectorAll('input[name="company_choice"]');
+    const existingFields = document.getElementById('existing-company-fields');
+    const newFields = document.getElementById('new-company-fields');
+
+    function toggleCompanyFields() {
+        const selectedValue = document.querySelector('input[name="company_choice"]:checked').value;
+        if (selectedValue === 'existing') {
+            existingFields.style.display = 'block';
+            newFields.style.display = 'none';
+            clearError('{{ form.new_company_name.id_for_label }}', '{{ form.new_company_name.id_for_label }}_error');
+        } else {
+            existingFields.style.display = 'none';
+            newFields.style.display = 'block';
+            clearError('{{ form.existing_company.id_for_label }}', '{{ form.existing_company.id_for_label }}_error');
+        }
+    }
+
+    companyRadios.forEach(radio => {
+        radio.addEventListener('change', toggleCompanyFields);
+    });
+
+    // Clear errors on input
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('input', () => {
+            const errorId = input.id + '_error';
+            clearError(input.id, errorId);
+        });
+    });
+
+    // Clear terms error when checkbox is checked
+    document.getElementById('terms').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('terms_error').classList.remove('show');
+        }
+    });
+</script>
+{% endblock %}

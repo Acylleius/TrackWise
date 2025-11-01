@@ -1,0 +1,197 @@
+.auth-body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent-light) 100%);
+    padding: 20px;
+    overflow-x: hidden;
+    padding-top: 80px;
+}
+
+/* Registration specific styles */
+.company-choice {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.company-choice li {
+    margin-bottom: 0.5rem;
+}
+
+.company-field {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    border-left: 4px solid var(--accent-light);
+    transition: var(--transition);
+}
+
+.company-field:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Django form field styling */
+.alert-danger {
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid var(--danger);
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    color: #ffcccc;
+}
+
+.alert-success {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid var(--success);
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    color: #ccffcc;
+}
+
+.alert ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+/* Processing screen styles */
+.processing-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-dark) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    padding: 20px;
+}
+
+.processing-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    max-width: 500px;
+    width: 100%;
+}
+
+.processing-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255,255,255,0.3);
+    border-top: 4px solid var(--accent-light);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 2rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.processing-card h2 {
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.processing-card p {
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+/* Radio input styling for Django forms */
+.radio-input {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.radio-input li {
+    margin-bottom: 0;
+}
+
+.radio-input input[type="radio"] {
+    margin-right: 8px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Ensure Django errors are visible */
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0 0;
+    color: #ffcccc;
+    font-size: 13px;
+}
+
+.errorlist li {
+    margin-bottom: 3px;
+}
+
+/* Enhanced error styling */
+.form-errors {
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid var(--danger);
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    color: #ffcccc;
+}
+
+.alert-danger {
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid var(--danger);
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    color: #ffcccc;
+}
+
+.alert-success {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid var(--success);
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    color: #ccffcc;
+}
+
+/* Ensure server errors are properly styled */
+.error-message.show {
+    display: block !important;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Radio input styling for Django forms */
+.radio-input {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.radio-input li {
+    margin-bottom: 0;
+    display: inline-block;
+    margin-right: 25px;
+}
+
+.radio-input input[type="radio"] {
+    margin-right: 8px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Smooth scrolling for error focus */
+html {
+    scroll-behavior: smooth;
+}
+

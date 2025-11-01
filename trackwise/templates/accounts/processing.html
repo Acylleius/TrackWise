@@ -1,69 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Processing - TrackWise</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <style>
-        .processing-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
-            padding: 2rem;
-        }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 2rem;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .processing-message {
-            margin-bottom: 1rem;
-            color: var(--dark-color);
-        }
-    </style>
-</head>
-<body>
-    <div class="processing-container">
-        <div class="spinner"></div>
-        
-        <h2 class="processing-message">
-            {% if role == 'business_owner' %}
-                Verifying company ownership...
-            {% else %}
-                Verifying employment details...
-            {% endif %}
-        </h2>
-        
-        <p style="color: var(--secondary-color); margin-bottom: 2rem;">
-            Please wait while we process your registration. This may take a few moments.
-        </p>
-        
-        <div style="color: var(--secondary-color); font-size: 0.9rem;">
-            <p>You will be redirected automatically once verification is complete.</p>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/accounts/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/accounts/registration.css' %}">
+{% endblock %}
+
+{% block title %}Processing - TrackWise{% endblock %}
+
+{% block content %}
+<div class="processing-container">
+    <div class="processing-card">
+        <div class="processing-spinner"></div>
+        <h2>Processing Your Registration</h2>
+        <p>We're setting up your {{ role|title }} account. This will only take a moment...</p>
+        <div class="mt-4">
+            <p><small>You will be redirected automatically</small></p>
         </div>
     </div>
+</div>
 
-    <script>
-        // Redirect after 3 seconds to simulate processing
-        setTimeout(function() {
-            window.location.href = "{% url 'login' %}";
-        }, 3000);
-    </script>
-</body>
-</html>
+<script>
+    // Redirect after 3 seconds
+    setTimeout(function() {
+        window.location.href = "{% url next_url %}";
+    }, 3000);
+</script>
+{% endblock %}

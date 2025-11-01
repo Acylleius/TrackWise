@@ -1,74 +1,183 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - TrackWise Inventory Management</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/accounts/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/accounts/login.css' %}">
+{% endblock %}
+
+{% block title %}Login - TrackWise{% endblock %}
+
+{% block content %}
+<div class="auth-body">
     <div class="auth-container">
-        <div class="auth-header">
-            <h1>TrackWise</h1>
-            <p>Intelligent Inventory Management System</p>
+        <div class="logo-container">
+            <div class="logo-text">
+                <i class="fas fa-chart-line"></i>
+                TrackWise
+            </div>
         </div>
         
-        <div class="auth-body">
-            <h2 style="text-align: center; margin-bottom: 1.5rem; color: var(--dark-color);">Welcome Back</h2>
-            
+        <div class="form-section">
+            <div class="auth-header">
+                <h2>Welcome Back</h2>
+                <p>Don't have an account? <a href="{% url 'accounts:business_owner_register' %}">Sign up</a></p>
+            </div>
+
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-{{ message.tags }}{% endif %}">
+                    <div class="alert alert-{{ message.tags }}">
                         {{ message }}
                     </div>
                 {% endfor %}
             {% endif %}
-            
-            {% if form.non_field_errors %}
-                <div class="alert alert-error">
-                    {% for error in form.non_field_errors %}
-                        {{ error }}
-                    {% endfor %}
+
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    Please enter a correct username and password. Note that both fields may be case-sensitive.
                 </div>
             {% endif %}
             
-            <form method="post" action="{% url 'login' %}">
+            <form method="post" id="login-form" novalidate>
                 {% csrf_token %}
                 
                 <div class="form-group">
-                    <label class="form-label" for="id_username">Username</label>
+                    <label class="form-label" for="{{ form.username.id_for_label }}">Username *</label>
                     {{ form.username }}
                     {% if form.username.errors %}
-                        <div class="errorlist">
-                            {% for error in form.username.errors %}
-                                <div>{{ error }}</div>
-                            {% endfor %}
-                        </div>
+                        {% for error in form.username.errors %}
+                            <span class="error-message show">{{ error }}</span>
+                        {% endfor %}
                     {% endif %}
                 </div>
-                
+
                 <div class="form-group">
-                    <label class="form-label" for="id_password">Password</label>
+                    <label class="form-label" for="{{ form.password.id_for_label }}">Password *</label>
                     {{ form.password }}
                     {% if form.password.errors %}
-                        <div class="errorlist">
-                            {% for error in form.password.errors %}
-                                <div>{{ error }}</div>
-                            {% endfor %}
-                        </div>
+                        {% for error in form.password.errors %}
+                            <span class="error-message show">{{ error }}</span>
+                        {% endfor %}
                     {% endif %}
                 </div>
-                
-                <input type="hidden" name="next" value="{{ request.GET.next }}">
-                
-                <button type="submit" class="btn btn-primary">Sign In</button>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-success">
+                        <span>Sign In</span>
+                    </button>
+                </div>
             </form>
             
-            <div class="auth-link">
-                <p>Don't have an account? <a href="{% url 'role_selection' %}">Create one here</a></p>
+            <div class="auth-footer">
+                <p class="footer-content">
+                    <a href="{% url 'accounts:landing' %}" class="footer-home-link">
+                        <i class="fas fa-home"></i> Back to Home
+                    </a>
+                    <a>|</a>
+                    <span class="footer-spacer"></span>
+                    <a href="#" class="footer-support-link">Contact Support</a>
+                </p>
             </div>
         </div>
+
+        <div class="particles-section" id="particles-js"></div>
     </div>
-</body>
-</html>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+<script>
+    // Particles configuration
+    particlesJS('particles-js', {
+        particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: '#7aa7e0' },
+            shape: { type: 'circle' },
+            opacity: { value: 0.8, random: true },
+            size: { value: 20, random: true },
+            line_linked: {
+                enable: true,
+                distance: 150,
+                color: '#7aa7e0',
+                opacity: 0.6,
+                width: 2
+            },
+            move: {
+                enable: true,
+                speed: 1.5,
+                direction: 'none',
+                random: true,
+                out_mode: 'out'
+            }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: {
+                onhover: { enable: true, mode: 'grab' },
+                resize: true
+            },
+            modes: {
+                grab: { distance: 180, line_linked: { opacity: 1 } }
+            }
+        },
+        retina_detect: true
+    });
+
+    // Form validation
+    const form = document.getElementById('login-form');
+    const usernameInput = document.getElementById('{{ form.username.id_for_label }}');
+    const passwordInput = document.getElementById('{{ form.password.id_for_label }}');
+
+    function validateForm() {
+        let isValid = true;
+
+        // Clear existing errors
+        document.querySelectorAll('.error-message').forEach(error => {
+            if (!error.classList.contains('show')) {
+                error.remove();
+            }
+        });
+
+        // Username validation
+        const username = usernameInput.value.trim();
+        if (!username) {
+            showError(usernameInput, 'Username is required');
+            isValid = false;
+        }
+
+        // Password validation
+        const password = passwordInput.value;
+        if (!password) {
+            showError(passwordInput, 'Password is required');
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    function showError(input, message) {
+        input.classList.add('error');
+        const errorElement = document.createElement('span');
+        errorElement.className = 'error-message show';
+        errorElement.textContent = message;
+        input.parentNode.appendChild(errorElement);
+    }
+
+    // Clear errors on input
+    [usernameInput, passwordInput].forEach(input => {
+        input.addEventListener('input', () => {
+            input.classList.remove('error');
+            const error = input.parentNode.querySelector('.error-message:not(.show)');
+            if (error) {
+                error.remove();
+            }
+        });
+    });
+
+    // Form submission
+    form.addEventListener('submit', (e) => {
+        if (!validateForm()) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

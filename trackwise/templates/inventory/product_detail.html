@@ -1,150 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Product - TrackWise</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <div>
-                <h1>Edit Product</h1>
-                <p>{{ profile.company.name }} - TrackWise</p>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/inventory.css' %}">
+{% endblock %}
+
+{% block title %}{{ product.item_name }} - TrackWise{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.item_name }}" class="product-detail-image">
+            {% else %}
+            <div class="product-detail-image bg-light d-flex align-items-center justify-content-center">
+                <i class="fas fa-box fa-5x text-muted"></i>
             </div>
-            <div style="margin-left: auto;">
-                <a href="{% url 'inventory_list' %}" class="btn btn-outline-header" style="width: auto; margin-right: 1rem;">Back to Inventory</a>
-                <a href="{% url 'logout' %}" class="btn btn-outline-logout" style="width: auto;">Logout</a>
-            </div>
+            {% endif %}
         </div>
         
-        <div class="dashboard-content">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-            
-            <div class="content-card">
-                <h3>Edit Product: {{ product.item_name }}</h3>
+        <div class="col-md-6">
+            <div class="detail-card">
+                <h2 class="mb-4">{{ product.item_name }}</h2>
                 
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-error">
-                            {% for error in form.non_field_errors %}
-                                {{ error }}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                    <div class="detail-item">
+                        <div class="detail-label">Product Name</div>
+                        {{ form.item_name }}
+                    </div>
                     
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                        <div>
-                            <div class="form-group">
-                                <label class="form-label">Product Name</label>
-                                {{ form.item_name }}
-                                {% if form.item_name.errors %}
-                                    <div class="errorlist">
-                                        {% for error in form.item_name.errors %}
-                                            <div>{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Category</label>
-                                {{ form.category }}
-                                {% if form.category.errors %}
-                                    <div class="errorlist">
-                                        {% for error in form.category.errors %}
-                                            <div>{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Quantity</label>
-                                {{ form.quantity }}
-                                {% if form.quantity.errors %}
-                                    <div class="errorlist">
-                                        {% for error in form.quantity.errors %}
-                                            <div>{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Unit of Measure</label>
-                                {{ form.unit_of_measure }}
-                                {% if form.unit_of_measure.errors %}
-                                    <div class="errorlist">
-                                        {% for error in form.unit_of_measure.errors %}
-                                            <div>{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Cost Price (₱)</label>
-                                {{ form.cost_price }}
-                                {% if form.cost_price.errors %}
-                                    <div class="errorlist">
-                                        {% for error in form.cost_price.errors %}
-                                            <div>{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Category</div>
+                        {{ form.category }}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="detail-label">Quantity</div>
+                            {{ form.quantity }}
                         </div>
-                        
-                        <div>
-                            <div class="form-group">
-                                <label class="form-label">Product Image</label>
-                                {{ form.image }}
-                                {% if form.image.errors %}
-                                    <div class="errorlist">
-                                        {% for error in form.image.errors %}
-                                            <div>{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                                
-                                {% if product.image %}
-                                    <div style="margin-top: 1rem;">
-                                        <p>Current Image:</p>
-                                        <img src="{{ product.image.url }}" alt="{{ product.item_name }}" style="max-width: 200px; border-radius: 8px;">
-                                    </div>
-                                {% endif %}
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Product Information</label>
-                                <div style="background: var(--light-color); padding: 1rem; border-radius: 8px;">
-                                    <p><strong>Created:</strong> {{ product.created_at|date:"M d, Y H:i" }}</p>
-                                    <p><strong>Last Updated:</strong> {{ product.updated_at|date:"M d, Y H:i" }}</p>
-                                    <p><strong>Total Value:</strong> ₱{{ product.total_value|floatformat:2 }}</p>
-                                </div>
-                            </div>
+                        <div class="col-6">
+                            <div class="detail-label">Unit of Measure</div>
+                            {{ form.unit_of_measure }}
                         </div>
                     </div>
                     
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <button type="submit" class="btn btn-primary" style="width: auto;">Update Product</button>
-                        <a href="{% url 'inventory_list' %}" class="btn btn-outline" style="width: auto;">Cancel</a>
-                        <a href="{% url 'product_delete' product.pk %}" class="btn btn-outline-logout" style="width: auto;" onclick="return confirm('Are you sure you want to delete this product?')">Delete Product</a>
+                    <div class="detail-item">
+                        <div class="detail-label">Cost Price</div>
+                        {{ form.cost_price }}
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Product Image</div>
+                        {{ form.image }}
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-orange">
+                            <i class="fas fa-save"></i> Update Product
+                        </button>
+                        <a href="{% url 'inventory:inventory_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Inventory
+                        </a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

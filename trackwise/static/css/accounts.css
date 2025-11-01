@@ -1,0 +1,139 @@
+/* Accounts specific styles */
+.auth-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--primary-orange), var(--light-orange));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    overflow: hidden;
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-header {
+    background: linear-gradient(135deg, var(--primary-orange), var(--light-orange));
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+.auth-header h2 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.auth-body {
+    padding: 2rem;
+}
+
+.auth-footer {
+    padding: 1rem 2rem;
+    background-color: var(--lighter-orange);
+    text-align: center;
+    border-top: 1px solid #dee2e6;
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+}
+
+.company-choice {
+    list-style: none;
+    padding: 0;
+}
+
+.company-choice li {
+    margin-bottom: 0.5rem;
+}
+
+.company-choice input[type="radio"] {
+    margin-right: 0.5rem;
+}
+
+.company-field {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: var(--lighter-orange);
+    border-radius: 5px;
+    border-left: 4px solid var(--primary-orange);
+}
+
+.processing-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--primary-orange), var(--light-orange));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.processing-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255,255,255,0.3);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 2rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.role-selection-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--primary-orange), var(--light-orange));
+    padding: 2rem 0;
+}
+
+.role-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+    height: 100%;
+}
+
+.role-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary-orange);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.role-icon {
+    font-size: 4rem;
+    color: var(--primary-orange);
+    margin-bottom: 1.5rem;
+}
+
+.role-card h3 {
+    color: var(--dark-gray);
+    margin-bottom: 1rem;
+}
+
+.role-card p {
+    color: #666;
+    margin-bottom: 1.5rem;
+}

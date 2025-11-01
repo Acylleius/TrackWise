@@ -1,248 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Details - TrackWise</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <div>
-                <h1>Product Details</h1>
-                <p>{{ profile.company.name }} - TrackWise</p>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/inventory.css' %}">
+{% endblock %}
+
+{% block title %}{{ product.item_name }} - TrackWise{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.item_name }}" class="product-detail-image">
+            {% else %}
+            <div class="product-detail-image bg-light d-flex align-items-center justify-content-center">
+                <i class="fas fa-box fa-5x text-muted"></i>
             </div>
-            <div style="margin-left: auto;">
-                <a href="{% url 'inventory_list' %}" class="btn btn-outline-header" style="width: auto; margin-right: 1rem;">Back to Inventory</a>
-                <a href="{% url 'logout' %}" class="btn btn-outline-logout" style="width: auto;">Logout</a>
-            </div>
+            {% endif %}
         </div>
         
-        <div class="dashboard-content">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-            
-            <div class="content-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h3>Product Details: {{ product.item_name }}</h3>
-                    <div class="staff-badge-large">
-                        Staff View Only
-                    </div>
+        <div class="col-md-6">
+            <div class="detail-card">
+                <h2 class="mb-4">{{ product.item_name }}</h2>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Product Name</div>
+                    <div class="detail-value">{{ product.item_name }}</div>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                    <div>
-                        <div class="form-group">
-                            <label class="form-label">Product Name</label>
-                            <input type="text" class="form-control" value="{{ product.item_name }}" disabled>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Category</label>
-                            <input type="text" class="form-control" value="{{ product.get_category_display }}" disabled>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Current Stock</label>
-                            <div class="staff-stock-controls">
-                                <button class="btn-stock btn-decrease" onclick="decreaseStock({{ product.pk }})">-</button>
-                                <span class="staff-stock-quantity" id="quantity-{{ product.pk }}">{{ product.get_display_quantity }}</span>
-                                <button class="btn-stock btn-increase" onclick="increaseStock({{ product.pk }})">+</button>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Unit of Measure</label>
-                            <input type="text" class="form-control" value="{{ product.get_unit_of_measure_display }}" disabled>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Cost Price (₱)</label>
-                            <input type="text" class="form-control" value="{{ product.cost_price }}" disabled>
-                        </div>
-
-                        <!-- Stock Status Alert -->
-                        {% if product.quantity == 0 %}
-                            <div class="staff-alert-card out-of-stock-alert">
-                                <h4>⚠️ Out of Stock</h4>
-                                <p>This product is completely out of stock. Please notify your manager for immediate restocking.</p>
-                            </div>
-                        {% elif product.quantity <= 10 %}
-                            <div class="staff-alert-card low-stock-alert">
-                                <h4>📋 Low Stock Alert</h4>
-                                <p>This product is running low ({{ product.quantity }} {{ product.singular_unit }}{{ product.quantity|pluralize }} remaining). Consider informing your manager.</p>
-                            </div>
-                        {% else %}
-                            <div class="staff-alert-card in-stock-alert">
-                                <h4>✅ In Stock</h4>
-                                <p>Stock level is healthy. Current quantity: {{ product.quantity }} {{ product.singular_unit }}{{ product.quantity|pluralize }}.</p>
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <div>
-                        <div class="form-group">
-                            <label class="form-label">Product Image</label>
-                            <div style="border: 2px solid var(--border-color); border-radius: 8px; padding: 1rem; background: var(--light-color);">
-                                {% if product.image %}
-                                    <img src="{{ product.image.url }}" alt="{{ product.item_name }}" style="max-width: 100%; border-radius: 8px; display: block; margin: 0 auto;">
-                                    <p style="text-align: center; margin-top: 0.5rem; color: var(--secondary-color); font-size: 0.9rem;">Current Product Image</p>
-                                {% else %}
-                                    <div style="text-align: center; padding: 2rem; color: var(--secondary-color);">
-                                        <span style="font-size: 3rem;">📦</span>
-                                        <p style="margin-top: 0.5rem;">No Image Available</p>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Product Information</label>
-                            <div style="background: var(--light-color); padding: 1rem; border-radius: 8px;">
-                                <p><strong>Created:</strong> {{ product.created_at|date:"M d, Y H:i" }}</p>
-                                <p><strong>Last Updated:</strong> {{ product.updated_at|date:"M d, Y H:i" }}</p>
-                                <p><strong>Total Value:</strong> ₱<span id="value-{{ product.pk }}">{{ product.total_value|floatformat:2 }}</span></p>
-                                <p><strong>Company:</strong> {{ product.company.name }}</p>
-                            </div>
-                        </div>
-
-                        {% comment %} <!-- Quick Actions -->
-                        <div class="form-group">
-                            <label class="form-label">Quick Actions</label>
-                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                                <button class="btn-stock btn-increase-large" onclick="increaseStock({{ product.pk }})">
-                                    + Add 1 {{ product.singular_unit }}
-                                </button>
-                                {% if product.quantity > 0 %}
-                                    <button class="btn-stock btn-decrease-large" onclick="decreaseStock({{ product.pk }})">
-                                        - Remove 1 {{ product.singular_unit }}
-                                    </button>
-                                {% endif %}
-                                <a href="{% url 'inventory_list' %}" class="btn btn-outline" style="width: auto; padding: 0.5rem 1rem;">
-                                    Back to Inventory
-                                </a>
-                            </div>
-                        </div> {% endcomment %}
-                    </div>
+                <div class="detail-item">
+                    <div class="detail-label">Category</div>
+                    <div class="detail-value">{{ product.get_category_display }}</div>
                 </div>
                 
-                <!-- Stock Update History (Placeholder for future feature) -->
-                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
-                    <h4 style="margin-bottom: 1rem;">Recent Stock Updates</h4>
-                    <div style="background: var(--light-color); padding: 1rem; border-radius: 8px; text-align: center;">
-                        <p style="color: var(--secondary-color); margin: 0;">
-                            Stock update history feature coming soon. Currently showing real-time quantity: 
-                            <strong id="current-quantity-{{ product.pk }}">{{ product.quantity }}</strong> {{ product.singular_unit }}{{ product.quantity|pluralize }}
-                        </p>
-                    </div>
+                <div class="detail-item">
+                    <div class="detail-label">Current Stock</div>
+                    <div class="detail-value">{{ product.quantity }} {{ product.get_unit_of_measure_display }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Cost Price</div>
+                    <div class="detail-value">${{ product.cost_price }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Total Value</div>
+                    <div class="detail-value">${{ product.total_value }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Last Updated</div>
+                    <div class="detail-value">{{ product.updated_at|date:"M d, Y H:i" }}</div>
+                </div>
+                
+                <div class="d-flex gap-2 mt-4">
+                    <a href="{% url 'inventory:inventory_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Inventory
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        function increaseStock(productId) {
-            fetch(`/inventory/${productId}/increase/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById(`quantity-${productId}`).textContent = data.display_quantity;
-                    document.getElementById(`value-${productId}`).textContent = data.total_value.toFixed(2);
-                    document.getElementById(`current-quantity-${productId}`).textContent = data.new_quantity;
-                    
-                    // Show success message
-                    showTempMessage('Stock increased successfully!', 'success');
-                    
-                    // Refresh page after short delay to update alerts
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                } else {
-                    showTempMessage('Error updating stock. Please try again.', 'error');
-                }
-            })
-            .catch(error => {
-                showTempMessage('Network error. Please check your connection.', 'error');
-            });
-        }
-
-        function decreaseStock(productId) {
-            fetch(`/inventory/${productId}/decrease/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById(`quantity-${productId}`).textContent = data.display_quantity;
-                    document.getElementById(`value-${productId}`).textContent = data.total_value.toFixed(2);
-                    document.getElementById(`current-quantity-${productId}`).textContent = data.new_quantity;
-                    
-                    // Show success message
-                    showTempMessage('Stock decreased successfully!', 'success');
-                    
-                    // Refresh page after short delay to update alerts
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                } else {
-                    showTempMessage('Error updating stock. Please try again.', 'error');
-                }
-            })
-            .catch(error => {
-                showTempMessage('Network error. Please check your connection.', 'error');
-            });
-        }
-
-        function showTempMessage(message, type) {
-            // Create temporary message element
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `alert alert-${type}`;
-            messageDiv.style.position = 'fixed';
-            messageDiv.style.top = '20px';
-            messageDiv.style.right = '20px';
-            messageDiv.style.zIndex = '1000';
-            messageDiv.style.minWidth = '300px';
-            messageDiv.textContent = message;
-            
-            document.body.appendChild(messageDiv);
-            
-            // Remove message after 3 seconds
-            setTimeout(() => {
-                document.body.removeChild(messageDiv);
-            }, 3000);
-        }
-        
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-    </script>
-</body>
-</html>
+</div>
+{% endblock %}

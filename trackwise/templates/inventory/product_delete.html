@@ -1,51 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delete Product - TrackWise</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <div>
-                <h1>Delete Product</h1>
-                <p>{{ profile.company.name }} - TrackWise</p>
-            </div>
-            <div style="margin-left: auto;">
-                <a href="{% url 'inventory_list' %}" class="btn btn-outline-header" style="width: auto; margin-right: 1rem;">Back to Inventory</a>
-                <a href="{% url 'logout' %}" class="btn btn-outline-logout" style="width: auto;">Logout</a>
-            </div>
-        </div>
-        
-        <div class="dashboard-content">
-            <div class="content-card">
-                <h3>Confirm Deletion</h3>
-                
-                <div class="alert alert-error">
-                    <strong>Warning:</strong> You are about to delete this product. This action cannot be undone.
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/inventory.css' %}">
+{% endblock %}
+
+{% block title %}Delete Product - TrackWise{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="detail-card text-center">
+                <div class="mb-4">
+                    <i class="fas fa-exclamation-triangle fa-4x text-warning"></i>
                 </div>
                 
-                <div style="background: var(--light-color); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
-                    <h4>{{ product.item_name }}</h4>
-                    <p><strong>Category:</strong> {{ product.get_category_display }}</p>
-                    <p><strong>Quantity:</strong> {{ product.get_display_quantity }}</p>
-                    <p><strong>Unit of Measure:</strong> {{ product.get_unit_of_measure_display }}</p>
-                    <p><strong>Cost Price:</strong> ₱{{ product.cost_price }} per {{ product.get_unit_of_measure_display }}</p>
-                    <p><strong>Total Value:</strong> ₱{{ product.total_value|floatformat:2 }}</p>
-                </div>
+                <h2 class="mb-3">Delete Product</h2>
+                <p class="lead">Are you sure you want to delete "{{ product.item_name }}"?</p>
+                <p class="text-muted">This action cannot be undone.</p>
                 
                 <form method="post">
                     {% csrf_token %}
-                    <div style="display: flex; gap: 1rem;">
-                        <button type="submit" class="btn btn-outline-logout" style="width: auto;">Yes, Delete Product</button>
-                        <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline" style="width: auto;">Cancel</a>
+                    <div class="d-flex gap-2 justify-content-center mt-4">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Yes, Delete Product
+                        </button>
+                        <a href="{% url 'inventory:inventory_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

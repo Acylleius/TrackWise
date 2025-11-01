@@ -1,0 +1,145 @@
+/* Login specific styles */
+.auth-body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent-light) 100%);
+    padding: 20px;
+    overflow-x: hidden;
+    padding-top: 80px;
+}
+
+/* Login form specific adjustments */
+.login-container {
+    max-width: 450px;
+}
+
+.login-container .form-section {
+    border-radius: 24px;
+}
+
+/* Responsive adjustments for login */
+@media (max-width: 768px) {
+    .login-container .auth-container {
+        margin: 100px 0 30px;
+    }
+    
+    .login-container .form-section {
+        border-radius: 24px;
+    }
+    
+    .login-container .particles-section {
+        display: none; /* Hide particles on mobile for login */
+    }
+}
+
+/* Additional login-specific styles */
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-white);
+    font-size: 14px;
+}
+
+.remember-me input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.forgot-password {
+    color: var(--accent-light);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.forgot-password:hover {
+    color: var(--text-white);
+    text-decoration: underline;
+}
+
+/* Social login options */
+.social-login {
+    margin: 25px 0;
+    text-align: center;
+}
+
+.social-divider {
+    position: relative;
+    margin: 25px 0;
+    text-align: center;
+}
+
+.social-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.social-divider span {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-dark) 100%);
+    padding: 0 15px;
+    color: var(--text-white);
+    font-size: 14px;
+    position: relative;
+}
+
+.social-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.social-btn {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-white);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.social-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--accent-light);
+    transform: translateY(-2px);
+}
+
+.social-btn i {
+    font-size: 18px;
+}
+
+/* Enhanced focus states for login */
+.form-control:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(167, 197, 235, 0.3);
+}
+
+/* Button hover effects */
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(42, 82, 130, 0.4);
+}

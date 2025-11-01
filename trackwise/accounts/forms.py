@@ -6,42 +6,45 @@ from .models import UserProfile, Company
 class BusinessOwnerRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={
         'class': 'form-control',
-        'placeholder': 'Enter your email'
+        'placeholder': 'you@example.com'
     }))
     first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={
         'class': 'form-control',
-        'placeholder': 'Enter your first name'
+        'placeholder': 'Enter first name'
     }))
     last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={
         'class': 'form-control',
-        'placeholder': 'Enter your last name'
+        'placeholder': 'Enter last name'
     }))
     
     # Company selection
     company_choice = forms.ChoiceField(
-        choices=[('new', 'Create New Company'), ('existing', 'Select Existing Company')],
-        widget=forms.RadioSelect(attrs={'class': 'company-choice'}),
+        choices=[('new', 'New Company'), ('existing', 'Existing Company')],
+        widget=forms.RadioSelect(attrs={'class': 'radio-input'}),
         initial='new'
     )
     existing_company = forms.ModelChoiceField(
         queryset=Company.objects.all(),
         required=False,
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        empty_label="Select a company"
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'placeholder': 'Select a company'
+        }),
+        empty_label="-- Select Existing Company --"
     )
     new_company_name = forms.CharField(
         max_length=200,
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter company name'
+            'placeholder': 'E.g., TrackWise Logistics Inc.'
         })
     )
     company_address = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={
-            'class': 'form-control',
-            'placeholder': 'Enter company address',
+            'class': 'form-control form-textarea',
+            'placeholder': 'Street, City, Postal Code',
             'rows': 3
         })
     )
@@ -50,7 +53,7 @@ class BusinessOwnerRegistrationForm(UserCreationForm):
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter contact information'
+            'placeholder': 'Phone or primary contact email'
         })
     )
 
@@ -60,19 +63,23 @@ class BusinessOwnerRegistrationForm(UserCreationForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            if field_name not in ['company_choice'] and hasattr(field, 'widget') and hasattr(field.widget, 'attrs'):
-                if field_name in ['existing_company', 'new_company_name', 'company_address', 'company_contact']:
-                    field.widget.attrs.update({'class': 'form-control company-field'})
-                else:
-                    field.widget.attrs.update({'class': 'form-control'})
-            
-            if field_name == 'username':
-                field.widget.attrs.update({'placeholder': 'Choose a username'})
-            elif field_name == 'password1':
-                field.widget.attrs.update({'placeholder': 'Enter password'})
-            elif field_name == 'password2':
-                field.widget.attrs.update({'placeholder': 'Confirm password'})
+        
+        # Update field attributes for the new design
+        self.fields['username'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Choose a username'
+        })
+        self.fields['password1'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Min 8 characters'
+        })
+        self.fields['password2'].widget.attrs.update({
+            'class': 'form-control', 
+            'placeholder': 'Repeat password'
+        })
+        
+        # Style the radio buttons properly
+        self.fields['company_choice'].widget.attrs.update({'class': 'radio-input'})
 
     def clean(self):
         cleaned_data = super().clean()
@@ -101,8 +108,8 @@ class BusinessOwnerRegistrationForm(UserCreationForm):
             if company_choice == 'new':
                 company = Company.objects.create(
                     name=self.cleaned_data['new_company_name'],
-                    address=self.cleaned_data['company_address'],
-                    contact_info=self.cleaned_data['company_contact']
+                    address=self.cleaned_data['company_address'] or '',
+                    contact_info=self.cleaned_data['company_contact'] or ''
                 )
             else:
                 company = self.cleaned_data['existing_company']
@@ -111,28 +118,37 @@ class BusinessOwnerRegistrationForm(UserCreationForm):
             UserProfile.objects.create(
                 user=user,
                 role='business_owner',
-                company=company
+                company=company,
+                phone_number='',
+                assigned_location='Main Office',
+                department='Management',
+                position='Owner',
+                is_active=True,
+                notes='Business owner account',
             )
         return user
 
 class StaffRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={
         'class': 'form-control',
-        'placeholder': 'Enter your email'
+        'placeholder': 'you@example.com'
     }))
     first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={
         'class': 'form-control',
-        'placeholder': 'Enter your first name'
+        'placeholder': 'Enter first name'
     }))
     last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={
         'class': 'form-control',
-        'placeholder': 'Enter your last name'
+        'placeholder': 'Enter last name'
     }))
     company = forms.ModelChoiceField(
         queryset=Company.objects.all(),
         required=True,
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        empty_label="Select your company"
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'placeholder': 'Select your company'
+        }),
+        empty_label="-- Select Your Company --"
     )
 
     class Meta:
@@ -141,16 +157,19 @@ class StaffRegistrationForm(UserCreationForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            if hasattr(field, 'widget') and hasattr(field.widget, 'attrs'):
-                field.widget.attrs.update({'class': 'form-control'})
-            
-            if field_name == 'username':
-                field.widget.attrs.update({'placeholder': 'Choose a username'})
-            elif field_name == 'password1':
-                field.widget.attrs.update({'placeholder': 'Enter password'})
-            elif field_name == 'password2':
-                field.widget.attrs.update({'placeholder': 'Confirm password'})
+        
+        self.fields['username'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Choose a username'
+        })
+        self.fields['password1'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Min 8 characters'
+        })
+        self.fields['password2'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Repeat password'
+        })
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -163,7 +182,13 @@ class StaffRegistrationForm(UserCreationForm):
             UserProfile.objects.create(
                 user=user,
                 role='staff',
-                company=self.cleaned_data['company']
+                company=self.cleaned_data['company'],
+                phone_number='',
+                assigned_location='Main Office',
+                department='General',
+                position='Staff Member',
+                is_active=True,
+                notes='Staff account',
             )
         return user
 
